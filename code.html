@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Run JavaScript on a Webpage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        #iframeContainer {
+            width: 100%;
+            height: 600px;
+            border: 1px solid #ccc;
+            overflow: hidden;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+        }
+        #codeArea {
+            width: 100%;
+            height: 150px;
+            font-family: monospace;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f7f7f7;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="container">
+        <h1>JavaScript Runner on a Webpage</h1>
+        
+        <div>
+            <label for="urlInput">Enter a URL to load in the iframe:</label>
+            <input type="text" id="urlInput" placeholder="https://example.com" />
+            <button id="loadUrlBtn">Load Website</button>
+        </div>
+
+        <div id="iframeContainer">
+            <iframe id="targetIframe" src="about:blank"></iframe>
+        </div>
+
+        <div>
+            <label for="codeArea">Enter JavaScript Code:</label>
+            <textarea id="codeArea" placeholder="Write your JavaScript here..."></textarea>
+        </div>
+
+        <button id="runCodeBtn">Run Code</button>
+    </div>
+
+    <script>
+        const urlInput = document.getElementById('urlInput');
+        const loadUrlBtn = document.getElementById('loadUrlBtn');
+        const iframe = document.getElementById('targetIframe');
+        const codeArea = document.getElementById('codeArea');
+        const runCodeBtn = document.getElementById('runCodeBtn');
+
+        let currentIframeWindow = null;
+
+        // Function to load the user-entered URL in the iframe
+        loadUrlBtn.addEventListener('click', () => {
+            const url = urlInput.value;
+            if (url) {
+                iframe.src = url; // Set iframe source to the entered URL
+                currentIframeWindow = null; // Reset current iframe window
+            }
+        });
+
+        // Function to handle loading and checking iframe readiness
+        iframe.onload = function () {
+            currentIframeWindow = iframe.contentWindow;
+            alert("Iframe loaded! Now you can run JavaScript.");
+        };
+
+        // Function to run JavaScript on the iframe content
+        runCodeBtn.addEventListener('click', () => {
+            const code = codeArea.value;
+
+            // Ensure there's content in the iframe
+            if (currentIframeWindow) {
+                try {
+                    // Run JavaScript code inside the iframe window
+                    currentIframeWindow.eval(code);
+                    alert('Code executed successfully!');
+                } catch (e) {
+                    alert('Error executing the code: ' + e.message);
+                }
+            } else {
+                alert('Please load a website first.');
+            }
+        });
+    </script>
+
+</body>
+</html>
